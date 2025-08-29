@@ -94,9 +94,8 @@ export default function ProcessStringPage() {
         console.log("Connection successful");
         connectionRef.current = connection;
       } catch (error) {
-        console.error("Connection failed: ", error);
       } finally {
-        //console.clear();
+        console.clear();
       }
     };
 
