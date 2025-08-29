@@ -11,7 +11,7 @@ The application will create the following docker containers: web api, react app,
 
 nginx serves as a reverse proxy for the frontend and api.
 
-The access the application, type localhost in your browser and click on enter. It will prompt you to enter a user name and password (nginx basic authentication)
+#### To access the application, type localhost in your browser and click on enter. It will prompt you to enter a user name and password (nginx basic authentication)
 
 #### Enter the following: username: admin   password: password123@
 
