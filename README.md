@@ -20,9 +20,9 @@ Once logged in, it will bring you to the home page of the application.
 To access the string processing feature, you need to login to the application itself. For that I have seeded the following user credentials
 
 
-# User 1: email: victorblaze@gmail.com  password: 123Pa$$word!
+#### User 1: email: victorblaze@gmail.com  password: 123Pa$$word!
 
-# User 2: email: victorblaze2010@gmail.com  password: 123Pa$$word!
+#### User 2: email: victorblaze2010@gmail.com  password: 123Pa$$word!
 
 
 Note: Logs are written to Seq - use the following credentials to access the seq dashboard: 
