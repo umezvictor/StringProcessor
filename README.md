@@ -13,15 +13,16 @@ nginx serves as a reverse proxy for the frontend and api.
 
 The access the application, type localhost in your browser and click on enter. It will prompt you to enter a user name and password (nginx basic authentication)
 
-Enter the following: username: admin   password: password123@
+# Enter the following: username: admin   password: password123@
 
 Once logged in, it will bring you to the home page of the application. 
 
 To access the string processing feature, you need to login to the application itself. For that I have seeded the following user credentials
 
-User 1: email: victorblaze@gmail.com  password: 123Pa$$word!
 
-User 2: email: victorblaze2010@gmail.com  password: 123Pa$$word!
+# User 1: email: victorblaze@gmail.com  password: 123Pa$$word!
+
+# User 2: email: victorblaze2010@gmail.com  password: 123Pa$$word!
 
 
 Note: Logs are written to Seq - use the following credentials to access the seq dashboard: 
