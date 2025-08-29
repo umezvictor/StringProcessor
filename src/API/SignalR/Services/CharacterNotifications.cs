@@ -1,6 +1,5 @@
 ﻿using Domain.Procesor;
 using Microsoft.AspNetCore.SignalR;
-using Webly.Jobs;
 using Webly.SignalR.Abstractions;
 using Webly.SignalR.CustomClients;
 using Webly.SignalR.Hubs;
@@ -8,7 +7,7 @@ using Webly.SignalR.Hubs;
 namespace Webly.SignalR.Services
 {
 
-    public class CharacterNotifications(ILogger<StringProcessorJob> logger,
+    public class CharacterNotifications(ILogger<CharacterNotifications> logger,
         IHubContext<NotificationHub, INotificationsClient> hubContext
         ) : ICharacterNotifications
     {

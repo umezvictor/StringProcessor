@@ -9,14 +9,14 @@ using Shouldly;
 namespace TestSuite.UnitTests
 {
 
-    public class StringProcessorTests
+    public class CreateProcessStringRequestHandlerTests
     {
         private readonly Mock<IProcessStringRequestRepository> repositoryMock = new();
         private readonly Mock<IUserContext> _userContextMock = new();
 
         private readonly CreateProcessStringRequestCommandHandler _serviceToTest;
 
-        public StringProcessorTests()
+        public CreateProcessStringRequestHandlerTests()
         {
 
             _serviceToTest = new CreateProcessStringRequestCommandHandler(_userContextMock.Object, repositoryMock.Object);
