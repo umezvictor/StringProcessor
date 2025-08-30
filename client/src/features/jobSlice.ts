@@ -1,7 +1,6 @@
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { CancelRequest, JobState } from "../types";
-//import { APICore } from "../api/apiCore";
 import { environmentVariable } from "../config";
 import axios from "axios";
 import { APICore } from "../api/apiCore";
@@ -91,7 +90,7 @@ export const processStringAsync = createAsyncThunk(
   "job/processString",
   async (payload: { data: any; idempotencyKey: any }) => {
     try {
-      const { data, idempotencyKey } = payload; // Destructure parameters from payload
+      const { data, idempotencyKey } = payload;
       const response = await axios.post(
         `${environmentVariable.VITE_API_URL}/api/processor/process-string`,
         data,

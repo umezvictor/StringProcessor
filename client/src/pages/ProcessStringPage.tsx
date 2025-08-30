@@ -6,7 +6,6 @@ import { v4 as uuidv4 } from "uuid";
 
 import { ToastContainer, toast } from "react-toastify";
 import { useEffect, useRef, useState } from "react";
-import axios from "axios";
 import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
 import { APICore } from "../api/apiCore";
 import { SignalRMethods } from "../enums/SignalRMethods";
@@ -35,7 +34,6 @@ type ProcessStringRequest = z.infer<typeof schema>;
 
 export default function ProcessStringPage() {
   const [receivedString, setReceivedString] = useState<string>("");
-  //const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [progressBar, setProgressBar] = useState<number>(0);
   const [backgroundJobId, setBackgroundJobId] = useState<string | null>(null);
   const connectionRef = useRef<HubConnection | null>(null);
@@ -60,7 +58,7 @@ export default function ProcessStringPage() {
     if (jobId) {
       setBackgroundJobId(jobId);
     }
-  }, [isProcessing]);
+  }, [isProcessing, jobError, jobId]);
 
   let totalCharactersReceived = 0;
 
@@ -95,7 +93,6 @@ export default function ProcessStringPage() {
         totalCharactersReceived = 0;
         setProgressBar(100);
         dispatch(stopJobProcessing());
-        //setIsProcessing(false);
         reset();
       });
 
@@ -105,7 +102,6 @@ export default function ProcessStringPage() {
         setProgressBar(0);
         setReceivedString("");
         dispatch(stopJobProcessing());
-        //setIsProcessing(false);
         reset();
         toast.error("Processing cancelled");
       });
@@ -129,26 +125,6 @@ export default function ProcessStringPage() {
     };
   }, []);
 
-  // const handleCancellation = async () => {
-  //   if (backgroundJobId && isProcessing) {
-  //     try {
-  //       const data: CancelRequest = {
-  //         jobId: backgroundJobId.toString(),
-  //       };
-
-  //       await api.postAsync(
-  //         `${environmentVariable.VITE_API_URL}/api/processor/cancel-job`,
-  //         data
-  //       );
-  //     } catch (error) {
-  //       setError("root", {
-  //         type: "manual",
-  //         message: String("An error while processing the string"),
-  //       });
-  //     }
-  //   }
-  // };
-
   const handleCancellation = async () => {
     try {
       if (backgroundJobId && isProcessing) {
@@ -163,7 +139,6 @@ export default function ProcessStringPage() {
     }
   };
 
-  //start
   const handleStringProcessing: SubmitHandler<ProcessStringRequest> = async (
     request
   ) => {
@@ -180,9 +155,6 @@ export default function ProcessStringPage() {
     }
   };
 
-  //end
-
-  //used zod + react-hook-form for form processing
   const {
     register,
     handleSubmit,
@@ -192,40 +164,6 @@ export default function ProcessStringPage() {
   } = useForm<ProcessStringRequest>({
     resolver: zodResolver(schema),
   });
-
-  // const processString: SubmitHandler<ProcessStringRequest> = async (data) => {
-  //   setIsProcessing(true);
-  //   setReceivedString("");
-
-  //   try {
-  //     const response = await axios.post(
-  //       `${environmentVariable.VITE_API_URL}/api/processor/process-string`,
-  //       data,
-  //       {
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //           "X-Idempotency-Key": idempotencyKeyRef.current,
-  //         },
-  //       }
-  //     );
-
-  //     if (response.status === 400) {
-  //       toast.error(
-  //         "Invalid request. Please check your input and ensure you're not sending more than one request at a time"
-  //       );
-  //     }
-
-  //     if (response.data.isSuccess) {
-  //       setBackgroundJobId(response.data.value);
-  //     }
-  //   } catch (error) {
-  //     setIsProcessing(false);
-  //     setError("root", {
-  //       type: "manual",
-  //       message: String("An error occured while processing the string"),
-  //     });
-  //   }
-  // };
 
   return (
     <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
