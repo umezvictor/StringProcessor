@@ -13,11 +13,11 @@ nginx serves as a reverse proxy for the frontend and api.
 
 #### To access the application, type localhost in your browser and click on enter. It will prompt you to enter a user name and password (nginx basic authentication)
 
-# Enter the following: 
+#### Enter the following: 
 
-# username: admin   
+#### username: admin   
 
-# password: password123@
+#### password: password123@
 
 Once logged in, it will bring you to the home page of the application. 
 
