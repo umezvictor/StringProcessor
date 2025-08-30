@@ -143,6 +143,7 @@ export default function ProcessStringPage() {
     request
   ) => {
     try {
+      setReceivedString("");
       dispatch(clearJobErrors());
       await dispatch(
         processStringAsync({
