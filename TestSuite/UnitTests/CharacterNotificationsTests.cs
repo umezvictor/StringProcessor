@@ -12,9 +12,6 @@
     using Xunit;
 
 
-
-
-
     public class CharacterNotificationsTests
     {
         private readonly Mock<ILogger<CharacterNotifications>> _mockLogger = new();
