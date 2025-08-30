@@ -10,7 +10,15 @@ import axios from "axios";
 import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
 import { APICore } from "../api/apiCore";
 import { SignalRMethods } from "../enums/SignalRMethods";
-import type { CancelRequest } from "../types";
+import type { CancelRequest, JobState } from "../types";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch } from "../app/store";
+import {
+  cancelProcessingAsync,
+  clearJobErrors,
+  processStringAsync,
+  stopJobProcessing,
+} from "../features/jobSlice";
 
 const schema = z.object({
   input: z
@@ -27,7 +35,7 @@ type ProcessStringRequest = z.infer<typeof schema>;
 
 export default function ProcessStringPage() {
   const [receivedString, setReceivedString] = useState<string>("");
-  const [isProcessing, setIsProcessing] = useState<boolean>(false);
+  //const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [progressBar, setProgressBar] = useState<number>(0);
   const [backgroundJobId, setBackgroundJobId] = useState<string | null>(null);
   const connectionRef = useRef<HubConnection | null>(null);
@@ -35,11 +43,22 @@ export default function ProcessStringPage() {
   const messageLengthRef = useRef<number>(0);
   const idempotencyKeyRef = useRef<string>("");
 
+  const { isProcessing, jobId, jobError } = useSelector(
+    (state: JobState) => state.value
+  );
+  const dispatch = useDispatch<AppDispatch>();
+
   var api = new APICore();
 
   useEffect(() => {
     if (!isProcessing) {
       idempotencyKeyRef.current = uuidv4();
+    }
+    if (jobError) {
+      toast.error(jobError);
+    }
+    if (jobId) {
+      setBackgroundJobId(jobId);
     }
   }, [isProcessing]);
 
@@ -75,7 +94,8 @@ export default function ProcessStringPage() {
       connection.on(SignalRMethods.ProcessingCompleted, () => {
         totalCharactersReceived = 0;
         setProgressBar(100);
-        setIsProcessing(false);
+        dispatch(stopJobProcessing());
+        //setIsProcessing(false);
         reset();
       });
 
@@ -84,7 +104,8 @@ export default function ProcessStringPage() {
         totalCharactersReceived = 0;
         setProgressBar(0);
         setReceivedString("");
-        setIsProcessing(false);
+        dispatch(stopJobProcessing());
+        //setIsProcessing(false);
         reset();
         toast.error("Processing cancelled");
       });
@@ -108,25 +129,58 @@ export default function ProcessStringPage() {
     };
   }, []);
 
+  // const handleCancellation = async () => {
+  //   if (backgroundJobId && isProcessing) {
+  //     try {
+  //       const data: CancelRequest = {
+  //         jobId: backgroundJobId.toString(),
+  //       };
+
+  //       await api.postAsync(
+  //         `${environmentVariable.VITE_API_URL}/api/processor/cancel-job`,
+  //         data
+  //       );
+  //     } catch (error) {
+  //       setError("root", {
+  //         type: "manual",
+  //         message: String("An error while processing the string"),
+  //       });
+  //     }
+  //   }
+  // };
+
   const handleCancellation = async () => {
-    if (backgroundJobId && isProcessing) {
-      try {
+    try {
+      if (backgroundJobId && isProcessing) {
+        dispatch(clearJobErrors());
         const data: CancelRequest = {
           jobId: backgroundJobId.toString(),
         };
-
-        await api.postAsync(
-          `${environmentVariable.VITE_API_URL}/api/processor/cancel-job`,
-          data
-        );
-      } catch (error) {
-        setError("root", {
-          type: "manual",
-          message: String("An error while processing the string"),
-        });
+        await dispatch(cancelProcessingAsync(data));
       }
+    } catch (error) {
+      setError("root", { type: "manual", message: String(error) });
     }
   };
+
+  //start
+  const handleStringProcessing: SubmitHandler<ProcessStringRequest> = async (
+    request
+  ) => {
+    try {
+      dispatch(clearJobErrors());
+      await dispatch(
+        processStringAsync({
+          data: request,
+          idempotencyKey: idempotencyKeyRef.current,
+        })
+      );
+    } catch (error) {
+      setError("root", { type: "manual", message: String(error) });
+    }
+  };
+
+  //end
 
   //used zod + react-hook-form for form processing
   const {
@@ -139,39 +193,39 @@ export default function ProcessStringPage() {
     resolver: zodResolver(schema),
   });
 
-  const processString: SubmitHandler<ProcessStringRequest> = async (data) => {
-    setIsProcessing(true);
-    setReceivedString("");
+  // const processString: SubmitHandler<ProcessStringRequest> = async (data) => {
+  //   setIsProcessing(true);
+  //   setReceivedString("");
 
-    try {
-      const response = await axios.post(
-        `${environmentVariable.VITE_API_URL}/api/processor/process-string`,
-        data,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "X-Idempotency-Key": idempotencyKeyRef.current,
-          },
-        }
-      );
+  //   try {
+  //     const response = await axios.post(
+  //       `${environmentVariable.VITE_API_URL}/api/processor/process-string`,
+  //       data,
+  //       {
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           "X-Idempotency-Key": idempotencyKeyRef.current,
+  //         },
+  //       }
+  //     );
 
-      if (response.status === 400) {
-        toast.error(
-          "Invalid request. Please check your input and ensure you're not sending more than one request at a time"
-        );
-      }
+  //     if (response.status === 400) {
+  //       toast.error(
+  //         "Invalid request. Please check your input and ensure you're not sending more than one request at a time"
+  //       );
+  //     }
 
-      if (response.data.isSuccess) {
-        setBackgroundJobId(response.data.value);
-      }
-    } catch (error) {
-      setIsProcessing(false);
-      setError("root", {
-        type: "manual",
-        message: String("An error occured while processing the string"),
-      });
-    }
-  };
+  //     if (response.data.isSuccess) {
+  //       setBackgroundJobId(response.data.value);
+  //     }
+  //   } catch (error) {
+  //     setIsProcessing(false);
+  //     setError("root", {
+  //       type: "manual",
+  //       message: String("An error occured while processing the string"),
+  //     });
+  //   }
+  // };
 
   return (
     <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
@@ -182,7 +236,7 @@ export default function ProcessStringPage() {
           <h4 className="card-title text-center mb-4">
             Generate random strings
           </h4>
-          <form onSubmit={handleSubmit(processString)}>
+          <form onSubmit={handleSubmit(handleStringProcessing)}>
             <div className="form-group mb-3">
               <input
                 {...register("input")}

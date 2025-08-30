@@ -13,16 +13,18 @@ import storage from "redux-persist/lib/storage";
 import userSlice from "../features/userSlice";
 
 import { combineReducers } from "redux";
+import jobSlice from "../features/jobSlice";
 
 const rootReducer = combineReducers({
   user: userSlice,
+  job: jobSlice,
 });
 
 //persist state when user refreshes the page
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["user"],
+  whitelist: ["user", "job"],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

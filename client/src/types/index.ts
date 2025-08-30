@@ -14,3 +14,11 @@ export interface UserState {
 export type CancelRequest = {
   jobId: string;
 };
+
+export interface JobState {
+  value: {
+    jobId: string | null;
+    isProcessing: boolean;
+    jobError: string | null;
+  };
+}
