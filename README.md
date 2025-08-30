@@ -25,7 +25,7 @@ To access the string processing feature, you need to login to the application it
 #### User 2: email: victorblaze2010@gmail.com  password: 123Pa$$word!
 
 
-Note: Logs are written to Seq - use the following credentials to access the seq dashboard: 
+Note: The application uses Seq for logging and monitoring - use the following credentials to access the seq dashboard: 
 
 url: http://localhost:8081/#/login 
 username: admin   password: Passw@rd123
