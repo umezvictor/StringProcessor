@@ -32,7 +32,9 @@ export default function LoginPage() {
     resolver: zodResolver(schema),
   });
 
-  const handleLogin: SubmitHandler<LoginRequest> = async (data) => {
+  const handleLogin: SubmitHandler<LoginRequest> = async (
+    data: LoginRequest
+  ) => {
     try {
       await dispatch(loginAsync(data));
     } catch (error) {

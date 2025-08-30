@@ -140,7 +140,7 @@ export default function ProcessStringPage() {
   };
 
   const handleStringProcessing: SubmitHandler<ProcessStringRequest> = async (
-    request
+    request: ProcessStringRequest
   ) => {
     try {
       //clear previous data
