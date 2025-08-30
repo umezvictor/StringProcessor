@@ -58,7 +58,7 @@ export default function ProcessStringPage() {
     if (jobId) {
       setBackgroundJobId(jobId);
     }
-  }, [isProcessing]);
+  }, [isProcessing, jobError, jobId]);
 
   let totalCharactersReceived = 0;
 
