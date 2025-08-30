@@ -51,6 +51,8 @@ username: admin   password: Passw@rd123
 
 -Caching using Memory Cache
 
+-Idempotency
+
 -Seq/Serilog for logging
 
 -Fluent Validation
