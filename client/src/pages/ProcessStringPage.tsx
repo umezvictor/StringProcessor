@@ -9,9 +9,9 @@ import { useEffect, useRef, useState } from "react";
 import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
 import { APICore } from "../api/apiCore";
 import { SignalRMethods } from "../enums/SignalRMethods";
-import type { CancelRequest, JobState } from "../types";
+import type { CancelRequest } from "../types";
 import { useDispatch, useSelector } from "react-redux";
-import type { AppDispatch } from "../app/store";
+import type { AppDispatch, RootState } from "../app/store";
 import {
   cancelProcessingAsync,
   clearJobErrors,
@@ -42,7 +42,7 @@ export default function ProcessStringPage() {
   const idempotencyKeyRef = useRef<string>("");
 
   const { isProcessing, jobId, jobError } = useSelector(
-    (state: JobState) => state.value
+    (state: RootState) => state.job.value
   );
   const dispatch = useDispatch<AppDispatch>();
 
@@ -58,7 +58,7 @@ export default function ProcessStringPage() {
     if (jobId) {
       setBackgroundJobId(jobId);
     }
-  }, [isProcessing, jobError, jobId]);
+  }, [isProcessing]);
 
   let totalCharactersReceived = 0;
 
