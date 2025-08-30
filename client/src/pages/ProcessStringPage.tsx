@@ -143,6 +143,7 @@ export default function ProcessStringPage() {
     request
   ) => {
     try {
+      //clear previous data
       setReceivedString("");
       dispatch(clearJobErrors());
       await dispatch(
