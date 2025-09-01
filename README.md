@@ -35,7 +35,7 @@ url: http://localhost:8081/#/login
 username: admin   password: Passw@rd123
 
 
-
+#### The frontend was built with React, Typescript and Bootstrap
 
 #### The Architecture/Setup for the WEB API includes
 
